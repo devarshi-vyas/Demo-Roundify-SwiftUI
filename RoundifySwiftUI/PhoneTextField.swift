@@ -13,7 +13,7 @@ import SwiftUI
 struct PhoneTextField: View {
     
     @Binding var textPhone: String
-    @Binding var otpviewOpened: Bool
+    @Binding var isVerifyClicked:Bool
     
     
     var body: some View {
@@ -43,7 +43,7 @@ struct PhoneTextField: View {
                     
                     Button("Verify"){
                         
-                        otpviewOpened = true
+                        isVerifyClicked.toggle()
                         
                     }.foregroundColor(.customBlue)
                     
@@ -63,8 +63,8 @@ struct PhoneTextField: View {
     }
 }
     
-    #Preview {
-        PhoneTextField(textPhone:.constant(""), otpviewOpened: .constant(false))
-    }
+#Preview {
+    PhoneTextField(textPhone:.constant(""), isVerifyClicked:.constant(false))
+}
     
 

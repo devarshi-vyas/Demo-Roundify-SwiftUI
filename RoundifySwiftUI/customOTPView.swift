@@ -11,7 +11,8 @@ import SwiftUI
 struct customOTPView: View {
     @State private var otpText = ""
     @FocusState private var isKeyboardShowing: Bool
-    @Binding var isEntered: Bool
+    @Binding var isOtpEntered: Bool
+    @Binding var receivedOTP: String
     
     var body: some View {
         VStack(spacing: 20) {
@@ -44,16 +45,16 @@ struct customOTPView: View {
             .onChange(of: otpText) { newValue in
                 if newValue.count == 6 {
                     isKeyboardShowing = false
-                    isEntered = true
+                    isOtpEntered = true
+                    receivedOTP = newValue
                     // Handle OTP verification here
                     print("OTP entered: (newValue)")
                 }else {
                     
-                    isEntered = false
+                    isOtpEntered = false
                 }
             }
             
-
         }
         .padding()
         .onAppear {
@@ -98,6 +99,6 @@ extension Binding where Value == String {
 // Preview
 struct OTPView_Previews: PreviewProvider {
     static var previews: some View {
-        customOTPView(isEntered: .constant(false))
+        customOTPView(isOtpEntered: .constant(false), receivedOTP:.constant(""))
     }
 }

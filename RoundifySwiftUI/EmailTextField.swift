@@ -35,7 +35,7 @@ struct EmailTextField: View {
                     
                     Button("Verify"){
                         
-                        otpviewOpened = true
+                        otpviewOpened.toggle()
                         
                     }.foregroundColor(.customBlue)
                     

@@ -16,8 +16,15 @@ struct SignUpSecondView: View {
     @State private var navigateToLogin: Bool = false
     @State private var isToggle: Bool = false
     
+    @StateObject var validationsModel = Validations()
+    @StateObject var viewModel = SignupViewModel()
+    
+    let mobileNumber: String
+    
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var router: Router
+    
+    private let toast = ToastManager.shared
     
     var body: some View {
      //   NavigationStack {
@@ -82,6 +89,21 @@ struct SignUpSecondView: View {
                         
                         Button("SIGN UP") {
                             
+                            if checkValidation() {
+                                
+                                let parameters: [String: Any] = [
+                                    "Name": name,
+                                    "Email": email,
+                                    "Password": password,
+                                    "PhoneNumber":"+91" + mobileNumber
+                                ]
+                                
+                                
+                                viewModel.signUpRequest(params: parameters)
+                                
+                            }
+                            
+                            
                         }.frame(maxWidth:.infinity)
                             .frame(height: 50)
                             .background(Color.customBlue)
@@ -123,8 +145,54 @@ struct SignUpSecondView: View {
         
     }
     
+ 
+    private func checkValidation() -> Bool {
+        
+        let validEmailError = validationsModel.validateEmail(email)
+        
+        let validPasswordError = validationsModel.validatePassword(password)
+        
+        
+        let validNameError = validationsModel.validateName(name)
+        
+        let passwordMatch = password == confirmpassword
+        
+        
+        if validEmailError == nil && validPasswordError == nil && validNameError == nil && passwordMatch {
+            
+            return true
+            
+        } else if validNameError != nil {
+            
+            toast.show(message: "Please enter valid Name", style: .error)
+            
+            return false
+        }
+        
+        else if validEmailError != nil  {
+            
+            toast.show(message: "Please enter valid Email", style: .error)
+            return false
+            
+        }else if validPasswordError != nil {
+            
+            toast.show(message: "Please enter valid Password", style: .error)
+            return false
+            
+        } else if password != confirmpassword {
+            
+            toast.show(message: "Password does not match", style: .error)
+            
+            return false
+        }
+            
+       return true
+    }
+    
+    
 }
 
 #Preview {
-    SignUpSecondView()
+    SignUpSecondView(mobileNumber: "")
 }
+

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		639C8A052F3A003E00933333 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = 639C8A042F3A003E00933333 /* AlertToast */; };
 		63D1ED392F2B3E61005C60EB /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 63D1ED382F2B3E61005C60EB /* Alamofire */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +55,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				63D1ED392F2B3E61005C60EB /* Alamofire in Frameworks */,
+				639C8A052F3A003E00933333 /* AlertToast in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +100,7 @@
 			name = RoundifySwiftUI;
 			packageProductDependencies = (
 				63D1ED382F2B3E61005C60EB /* Alamofire */,
+				639C8A042F3A003E00933333 /* AlertToast */,
 			);
 			productName = RoundifySwiftUI;
 			productReference = 633496582ECB002300D0DE53 /* RoundifySwiftUI.app */;
@@ -129,6 +132,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				63D1ED372F2B3E61005C60EB /* XCRemoteSwiftPackageReference "Alamofire" */,
+				639C8A032F3A003E00933333 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 633496592ECB002300D0DE53 /* Products */;
@@ -372,6 +376,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		639C8A032F3A003E00933333 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.9;
+			};
+		};
 		63D1ED372F2B3E61005C60EB /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -383,6 +395,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		639C8A042F3A003E00933333 /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 639C8A032F3A003E00933333 /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
+		};
 		63D1ED382F2B3E61005C60EB /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 63D1ED372F2B3E61005C60EB /* XCRemoteSwiftPackageReference "Alamofire" */;

@@ -14,9 +14,10 @@ final class Router: ObservableObject {
     enum AuthFlow: Codable, Hashable {
         case login
         case signup1
-        case signup2
+        case signup2(mobile: String)
         case forgotPassword
-        case resetPassword
+        case resetPassword(userid: String,phone: String)
+        case tabBarView
         
     }
 

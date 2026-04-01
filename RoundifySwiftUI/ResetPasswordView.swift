@@ -13,6 +13,11 @@ struct ResetPasswordView: View {
     @State private var confirmpassword: String = ""
     @EnvironmentObject var router: Router
     
+    private let toast = ToastManager.shared
+    @StateObject var viewModel = SignupViewModel()
+    let userID: String
+    let phone: String
+    
     var body: some View {
         VStack {
             ZStack {
@@ -56,6 +61,11 @@ struct ResetPasswordView: View {
                 
                 Button("RESET PASSWORD"){
                     
+                    if checkValidation() {
+                        
+                        resetPasswordRequest()
+                    }
+                    
                 }.frame(maxWidth: .infinity)
                     .frame(height:40)
                     .background(Color.customBlue)
@@ -85,8 +95,40 @@ struct ResetPasswordView: View {
         
         
     }
+    
+    
+    private func checkValidation() -> Bool {
+        
+        if newpassword.isEmpty || confirmpassword.isEmpty {
+            
+            toast.show(message: "Please fill all the fields", style: .error)
+            
+            return false
+        }
+        
+        if newpassword != confirmpassword {
+            
+            toast.show(message: "Password does not match", style: .error)
+            
+            return false
+        }
+        
+        return true
+    }
+    
+    private func resetPasswordRequest() {
+        
+        let parameters: [String: Any] = [
+            "UserID": userID,
+            "PhoneNumber": "+91" + phone ,
+            "Password": newpassword ]
+        
+        viewModel.resetPasswordRequest(params: parameters)
+        
+    }
+   
 }
 
 #Preview {
-    ResetPasswordView()
+    ResetPasswordView(userID: "", phone: "")
 }

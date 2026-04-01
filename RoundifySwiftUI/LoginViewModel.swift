@@ -19,7 +19,10 @@ class LoginViewModel: ObservableObject {
     @Published var isSuccess = false
     @Published var isDeviceIdSucess: Bool = false
     @Published var deviceId: String?
+    @Published var isNewDeviceId: Bool = false
+    @Published var isSucesswithOTP: Bool = false
     
+    private let toast = ToastManager.shared
     
     private let apiService = ApiServiceManager.shared
     
@@ -29,7 +32,7 @@ class LoginViewModel: ObservableObject {
         isSuccess = false
         
         // Replace "/login" with your actual login endpoint path
-        apiService.postData(forPath: "9000/users/login", parameters: params) { [weak self] result in
+        apiService.postData(forPath: "/users/login", parameters: params) { [weak self] result in
             guard let self = self else { return }
             
             DispatchQueue.main.async {
@@ -48,8 +51,9 @@ class LoginViewModel: ObservableObject {
                         self.loginData = loginResponse
                         
                         // Check if login was successful
-                        if loginResponse.responseData.status == 200 {
+                        if loginResponse.responseData.status == 200 && loginResponse.responseData.data.isNewDevice == true {
                             self.isSuccess = true
+                            self.isNewDeviceId = true
                             
                             // Save token and user data
                             if let token = loginResponse.responseData.data.token {
@@ -61,7 +65,8 @@ class LoginViewModel: ObservableObject {
                             }
                             
                             if let userID = loginResponse.responseData.data.userID {
-                                UserDefaults.standard.set(userID, forKey: "userID")
+                                print(userID)
+                                CredentialManager.shared.setUserID(userID)
                             }
                             
                             if let email = loginResponse.responseData.data.email {
@@ -72,23 +77,26 @@ class LoginViewModel: ObservableObject {
                                 UserDefaults.standard.set(name, forKey: "userName")
                             }
                             
-                        } else {
-                            self.errorMessage = loginResponse.responseData.message
+                        } else if loginResponse.responseData.status == 200 && loginResponse.responseData.data.isNewDevice == false {
+                            
+                            self.isNewDeviceId = false
+                            self.isSuccess = true
                         }
                         
                     } catch {
-                        print("❌ Decoding Error: \(error)")
-                        self.errorMessage = "Failed to parse response. Please try again."
+                       
+                        self.toast.show(message: "Failed to parse response. Please try again.", style:.error)
                     }
                     
                 case .failure(let error):
                     switch error {
                     case .networkError(let afError, _):
-                        print("❌ Network Error: \(afError)")
-                        self.errorMessage = "Login failed. Please check your credentials and try again."
+                       
+                        self.toast.show(message: "Login failed. Please check your credentials and try again.", style:.error)
+                        
                     case .invalidData:
-                        print("❌ Invalid Data")
-                        self.errorMessage = "Invalid response from server. Please try again."
+                       
+                        self.toast.show(message: "Invalid response from server. Please try again.", style:.error)
                     }
                 }
             }
@@ -96,8 +104,53 @@ class LoginViewModel: ObservableObject {
     }
     
     
+    func loginWithOtp(params: [String: Any]) {
+        
+        isLoading = true
+        errorMessage = nil
+        isSucesswithOTP = false
+        
+        // Replace "/login" with your actual login endpoint path
+        apiService.postData(forPath:"/users/login/otp", parameters: params) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.isLoading = false
+                
+                switch result {
+                case .success(let json):
+                    print("✅ Login With OTP Response: \(json)")
+                    
+                    // Parse the response
+                    do {
+                       
+                        self.isSucesswithOTP = true
+                        self.toast.show(message: "Login Successful.", style:.success)
+                        
+                    } catch {
+                       
+                        self.toast.show(message: "Failed to parse response. Please try again.", style:.error)
+                    }
+                    
+                case .failure(let error):
+                    switch error {
+                    case .networkError(let afError, _):
+                       
+                        self.toast.show(message: "Login failed. Please check your credentials and try again.", style:.error)
+                        
+                    case .invalidData:
+                       
+                        self.toast.show(message: "Invalid response from server. Please try again.", style:.error)
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    
     func getDeviceID() {
-        let path = "9000/users/generateDeviceID"
+        let path = "/users/generateDeviceID"
         apiService.getData(forPath: path) { [weak self] result in
             switch result {
             case .success(let json):
@@ -106,11 +159,8 @@ class LoginViewModel: ObservableObject {
                     let responseData = json["ResponseData"] as? [String: Any]
                     let data = responseData?["data"] as? [String: Any]
                     let deviceid = data?["DeviceID"] as? String
-                    
                     self?.isDeviceIdSucess = true
-                    
                     self?.deviceId = deviceid
-                    
                 }
                 
             case .failure(let error):
