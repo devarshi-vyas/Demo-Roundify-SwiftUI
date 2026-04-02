@@ -57,11 +57,13 @@ class LoginViewModel: ObservableObject {
                             
                             // Save token and user data
                             if let token = loginResponse.responseData.data.token {
-                                UserDefaults.standard.set(token, forKey: "authToken")
+                               
+                                TokenManager.shared.setAccessToken(token)
                             }
                             
                             if let refreshToken = loginResponse.responseData.data.refreshToken {
-                                UserDefaults.standard.set(refreshToken, forKey: "refreshToken")
+                                TokenManager.shared.setRefreshToken(refreshToken)
+                                
                             }
                             
                             if let userID = loginResponse.responseData.data.userID {
@@ -70,7 +72,9 @@ class LoginViewModel: ObservableObject {
                             }
                             
                             if let email = loginResponse.responseData.data.email {
-                                UserDefaults.standard.set(email, forKey: "userEmail")
+                              
+                                CredentialManager.shared.setEmail(email)
+                                
                             }
                             
                             if let name = loginResponse.responseData.data.name {
